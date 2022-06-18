@@ -68,9 +68,7 @@
      * @returns {*[]}
      */
     function getCompanyFromId(companyId) {
-        var cnyId = Number( companyId );
-        console.log( 'id: ', cnyId );
-        console.log('list: ', companiesList);
+        var cnyId = parseInt( companyId );
         var filtered = companiesList.filter(company => company.id === cnyId);
         if (filtered.length) {
             return filtered[0];
