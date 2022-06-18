@@ -29,7 +29,7 @@
         e.Problème:
             line.addEventListener( 'click', function ()
                 {
-                    alert( task.Txt );
+                    alert( task.TxtCivilName);
                 });
           Solution:
             line.addEventListener( 'click', function ( e  )
