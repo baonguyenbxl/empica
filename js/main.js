@@ -3,6 +3,8 @@
     
     var tasksTable;
     var companiesList = [];
+    
+    // fetch companiesList first in order to always have translations companyid to company name
     updateCompanies().then(()=>{init()});
     function init ()
     {
@@ -67,7 +69,9 @@
      * @param companyId
      * @returns {*[]}
      */
-    function getCompanyFromId(companyId) {
+    function getCompanyFromId ( companyId )
+    {
+        
         var cnyId = parseInt( companyId );
         var filtered = companiesList.filter(company => company.id === cnyId);
         if (filtered.length) {

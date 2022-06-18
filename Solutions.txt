@@ -1,0 +1,63 @@
+* Outil: Visual Studio Code
+
+* Bugs (explications en commentaire):
+        a.Problème:
+            var isZero = Math.floor(Math.random() * 2);
+          Solution:
+            var isZero = Math.floor((Math.random() * 2)+1);
+        b.Problème:
+            this.tasks = tasks;
+          Solution:
+            self.tasks = tasks;
+        c.Problème:
+            this.aggregatedValues = getAggregatedValues(tasks);
+          Solution:
+            self.aggregatedValues = getAggregatedValues(tasks);
+        d.Problème:
+            aggregatedValues[ col.property ] += col.aggregateFn( task );
+          Solution:
+            switch (col.property) {
+                            case "NumDaysRequested":
+                                aggregatedValues[ col.property ] += ( task.NumDaysRequested ) ? task.NumDaysRequested : 0;                                
+                                break;
+                            case "TxtCivilName":
+                                aggregatedValues[ col.property ] += col.aggregateFn( task );                                
+                                break;
+                            default:
+                                break;
+                        }
+        e.Problème:
+            line.addEventListener( 'click', function ()
+                {
+                    alert( task.Txt );
+                });
+          Solution:
+            line.addEventListener( 'click', function ( e  )
+                {
+                    alert( e.target.parentNode.firstChild.innerText );
+                });
+        f.Problème:
+            init();
+            var tasksTable;
+            var companiesList = [];
+            function init ()
+            {
+                tasksTable = new TasksTableComponent();
+                document.getElementById('refreshBtn').addEventListener('click', function () {
+                    updateTable();
+                } );
+                updateCompanies()    
+                updateTable();
+            }
+          Solution:
+            var tasksTable;
+            var companiesList = [];
+            updateCompanies().then(()=>{init()});
+            function init ()
+            {
+                tasksTable = new TasksTableComponent();
+                document.getElementById('refreshBtn').addEventListener('click', function () {
+                    updateTable();
+                } );
+                updateTable();
+            }        
