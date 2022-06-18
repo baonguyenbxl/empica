@@ -34,26 +34,22 @@ window.dataService = (function() {
         }
     };
 
-    
+    return service;
 
     function getTasks() {
         return new Promise(resolve => {
-            setTimeout( () =>
-            {
-                //console.log('getTasks: ',mock);
+            setTimeout(() => {
                 resolve(mock)
-            }, Math.floor( Math.random() * 2000 ) + 100 )
+            }, Math.floor(Math.random() * 2000) + 100 )
         })
     }
 
     function getTranslations() {
-        return new Promise((resolve, reject) => {
-            // 
-            var isZero = Math.floor( ( Math.random() * 2 ) + 1 );
-            //console.log('getTranslations>isZero: ', isZero);
-            if ( isZero )
-            {
-                //console.log('getTranslations>isZero>translations: ',translations);
+        return new Promise( ( resolve, reject ) =>
+        {
+            // the trick comes from the variable name isZero can make confusion with value while debugging, as isZero is a boolean 0 means false
+            var isZero = Math.floor((Math.random() * 2)+1);
+            if(isZero){
                 resolve(translations);
              } else {
                 console.warn('error while loading translations');
@@ -67,8 +63,8 @@ window.dataService = (function() {
         return new Promise(resolve => {
             setTimeout(() => {
                 resolve(companiesMocks)
-            }, Math.floor(Math.random() * 100) + 10 );
+            }, Math.floor(Math.random() * 1000) + 100 );
         })
     }
-    return service;
+
 })();

@@ -36,12 +36,17 @@ window.TasksTableComponent = (function (window) {
                 property: 'TxtCompanyName',
             }
         ];
+
+        return {
+            render,
+            setTasks,
+        }
+
         /**
          * render data
          * @param element
          */
         function render(element) {
-            console.log(getTableElement());
             element.innerHTML = '';
             element.append(getTableElement());
         }
@@ -52,17 +57,19 @@ window.TasksTableComponent = (function (window) {
          */
         function getTableElement() {
             var tableEl = document.createElement('table');
-            tableEl.setAttribute( 'class', 'Tasks' );
-            console.log('getTableElement>self.tasks: ',self.tasks);
+            tableEl.setAttribute('class', 'Tasks');
             for (var i = 0; i < self.tasks.length; i++) {
                 var task = self.tasks[i];
                 if (i === 0) {
                     tableEl.append(getHeaderElement(task));
                 }
                 var line = getLineElement(task);
-                tableEl.append(line);
-                line.addEventListener('click', function(){
-                   alert(task.TxtCivilName);
+                tableEl.append( line );
+                // Using e argument as target of the click event 
+                line.addEventListener( 'click', function ( e  )
+                {
+                    // Get the parent node of click's target then send the innerText of the first sibling node to alert popup
+                    alert( e.target.parentNode.firstChild.innerText );
                 });
             }
             tableEl.append(getFooterElement(self.aggregatedValues));
@@ -127,9 +134,13 @@ window.TasksTableComponent = (function (window) {
             return tfoot;
         }
 
-        function setTasks(tass) {
-            self.tasks = tass;
-            self.aggregatedValues = getAggregatedValues(tass);
+        function setTasks ( tasks )
+        {
+
+            // need to assign tasks into self not this
+
+            self.tasks = tasks;
+            self.aggregatedValues = getAggregatedValues(tasks);
         }
 
         /**
@@ -138,26 +149,33 @@ window.TasksTableComponent = (function (window) {
          * @param tasks
          * @returns {{}}
          */
-        function getAggregatedValues(tass) {
+        function getAggregatedValues(tasks) {
             var aggregatedValues = {};
-            for(var i = 0; i < tass.length; i++) {
-                var task = tass[i];
+            for(var i = 0; i < tasks.length; i++) {
+                var task = tasks[i];
                 for(var j = 0; j < self.columns.length; j++) {
                     var col = self.columns[j];
                     if(col.hasOwnProperty('aggregateFn')){
                         if(!aggregatedValues.hasOwnProperty(col.property)){
                             aggregatedValues[col.property] = 0;
                         }
-                        aggregatedValues[col.property] += col.aggregateFn(task);
+                        // need to detect if the col.property is NumDaysRequested or TxtCivilName in order to add the right value
+                        // as NumDaysRequested property is an item and TxtCivilName is a number 
+                        switch (col.property) {
+                            case "NumDaysRequested":
+                                // ternary var in case of the number is undefined
+                                aggregatedValues[ col.property ] += ( task.NumDaysRequested ) ? task.NumDaysRequested : 0;                                
+                                break;
+                            case "TxtCivilName":
+                                aggregatedValues[ col.property ] += col.aggregateFn( task );                                
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
             return aggregatedValues;
-        }
-
-        return {
-            setTasks,
-            render,
         }
     };
 

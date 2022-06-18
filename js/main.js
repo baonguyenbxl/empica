@@ -1,40 +1,36 @@
 (function (window, document) {
 
-
+    
     var tasksTable;
     var companiesList = [];
-    var tsk;
-    function init() {
-        tasksTable = new TasksTableComponent();
+    
+    function init ()
+    {
 
+        tasksTable = new TasksTableComponent();
         document.getElementById('refreshBtn').addEventListener('click', function () {
             updateTable();
-        });
-
-        updateCompanies()
+        } );
+        updateCompanies();
         updateTable();
     }
 
     function updateTable() {
         var isLoading = true;
         document.getElementById('dataTable').innerHTML = 'Loading...';
+
+        return dataService.getTranslations().then(onTranslationsReady);
+
         function onTranslationsReady(translations) {
             if(!translations){
                 translations = {types : {}};
             }
-            getTasks( translations.types ).then( ( tasks ) =>
-            {
-                console.log( 'updateTable>onTranslationsReady: ', tasks );   
+            getTasks(translations.types).then((tasks) => {
                 tasksTable.setTasks(tasks);
                 isLoading = false;
                 tasksTable.render(document.getElementById('dataTable'));
             });
         }
-        return dataService.getTranslations().then( ( v ) =>
-        {
-            console.log( 'updateTable: ', v );
-            onTranslationsReady( v )
-        } );
     }
 
     function updateCompanies() {
@@ -43,32 +39,25 @@
         });
     }
 
-    function getTasks ( typeTranslations )
-    {
-        function getTaskItemFromXml ( task, typeTranslations )
-        {
-            task = convertXmlToJson( task );
-            var taskItem = {};
-            for ( var i in task.Item )
-            {
-                taskItem[ i ] = task.Item[ i ][ '#text' ];
-            }
-            taskItem.NumDaysRequested = parseInt( taskItem.NumDaysRequested );
-            taskItem.TxtCompanyName = getCompanyFromId( taskItem.NumCompanyId ).name;
-            taskItem.TxtType = typeTranslations[ taskItem.TxtType ] || taskItem.TxtType;
-            return taskItem;
-        }
-
-        return dataService.getTasks().then( ( tasks ) =>
-        {
-            console.log('getTasks: ',tasks);
-            var taskks = tasks.map(task => {
+    function getTasks(typeTranslations) {
+        return dataService.getTasks().then((tasks) => {
+            var tasks = tasks.map(task => {
                 return getTaskItemFromXml(task, typeTranslations)
             });
-            return taskks;
+            return tasks;
         });
 
-
+        function getTaskItemFromXml(task, typeTranslations) {
+            task = convertXmlToJson(task);
+            var taskItem = {};
+            for (var i in task.Item) {
+                taskItem[i] = task.Item[i]['#text'];
+            }
+            taskItem.NumDaysRequested = parseInt(taskItem.NumDaysRequested);
+            taskItem.TxtCompanyName = getCompanyFromId(taskItem.NumCompanyId).name;
+            taskItem.TxtType = typeTranslations[taskItem.TxtType] || taskItem.TxtType;
+            return taskItem;
+        }
     }
 
     /**
@@ -79,8 +68,10 @@
      * @returns {*[]}
      */
     function getCompanyFromId(companyId) {
-        companyId = parseInt(companyId);
-        var filtered = companiesList.filter(company => company.id === companyId);
+        var cnyId = Number( companyId );
+        console.log( 'id: ', cnyId );
+        console.log('list: ', companiesList);
+        var filtered = companiesList.filter(company => company.id === cnyId);
         if (filtered.length) {
             return filtered[0];
         } else {
@@ -244,5 +235,4 @@
         return JSON.parse(string);
     }
     init();
-
 })(window, document);

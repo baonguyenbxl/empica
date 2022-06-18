@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "live-server --port=9000"
+    "start": "http-server -p 9000"
   },
   "author": "Yves-André Giroud",
   "license": "ISC",
   "devDependencies": {
-    "http-server": "^0.12.3",
+    "http-server": "^0.12.3"
+  },
+  "dependencies": {
     "live-server": "^1.2.2"
   }
 }
