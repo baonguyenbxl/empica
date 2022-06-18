@@ -3,7 +3,7 @@
     
     var tasksTable;
     var companiesList = [];
-    
+    updateCompanies().then(()=>{init()});
     function init ()
     {
 
@@ -11,7 +11,7 @@
         document.getElementById('refreshBtn').addEventListener('click', function () {
             updateTable();
         } );
-        updateCompanies();
+        
         updateTable();
     }
 
@@ -234,5 +234,5 @@
         const string = "{\n" + tab + (tab ? json.replace(/\t/g, tab) : json.replace(/\t|\n/g, "")) + "\n}"
         return JSON.parse(string);
     }
-    init();
+
 })(window, document);
